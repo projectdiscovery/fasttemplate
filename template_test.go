@@ -357,6 +357,9 @@ func TestExecuteStringStd(t *testing.T) {
 	// test unknown tag
 	testExecuteStringStd(t, "{unknown}", "{unknown}")
 	testExecuteStringStd(t, "{foo}q{unexpected}{missing}bar{foo}", "xxxxq{unexpected}{missing}barxxxx")
+
+	// test nested tag
+	testExecuteStringStd(t, "{base64_encode({foo})}", "{base64_encode(xxxx)}")
 }
 
 func testExecuteStringStd(t *testing.T, template, expectedOutput string) {
