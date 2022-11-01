@@ -362,6 +362,23 @@ func TestExecuteStringStd(t *testing.T) {
 	testExecuteStringStd(t, "{base64_encode({foo})}", "{base64_encode(xxxx)}")
 }
 
+func TestExecuteStringStdNested(t *testing.T) {
+	// single character tags
+	testExecuteStringStdNested(t, "{", "}", "{base64_encode({foo})}", "{base64_encode(xxxx)}")
+
+	// multi character multi nested
+	testExecuteStringStdNested(t, "{{", "}}", "{{base64_encode('{{foo}}')}}", "{{base64_encode('xxxx')}}")
+	testExecuteStringStdNested(t, "{{", "}}", "{{{{base64_encode('{{foo}}')}}}}", "{{{{base64_encode('xxxx')}}}}")
+	testExecuteStringStdNested(t, "{{", "}}", "{{outside{{base64_encode('{{foo}}')}}}}", "{{outside{{base64_encode('xxxx')}}}}")
+}
+
+func testExecuteStringStdNested(t *testing.T, start, end, template, expectedOutput string) {
+	output := ExecuteStringStd(template, start, end, map[string]interface{}{"foo": "xxxx"})
+	if output != expectedOutput {
+		t.Fatalf("unexpected output for template=%q: %q. Expected %q", template, output, expectedOutput)
+	}
+}
+
 func testExecuteStringStd(t *testing.T, template, expectedOutput string) {
 	output := ExecuteStringStd(template, "{", "}", map[string]interface{}{"foo": "xxxx"})
 	if output != expectedOutput {

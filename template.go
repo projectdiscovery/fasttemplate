@@ -415,7 +415,7 @@ func keepUnknownTagFunc(w io.Writer, startTag, endTag, tag string, m map[string]
 		if _, err := w.Write(unsafeString2Bytes(tag[:i])); err != nil {
 			return 0, err
 		}
-		tag = tag[i+1:]
+		tag = tag[i+len(startTag):]
 	}
 	v, ok := m[tag]
 	if !ok {
